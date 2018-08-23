@@ -91,20 +91,26 @@ async function deleteHostname(path, req) {
  * Adds glitch_app_id to hostname responses
  */
 async function stitchGlitch(resp, hostname) {
-  const record = await resp.json()
-  console.log(resp.status, record)
-  if (!hostname) {
-    hostname = record.data.attributes.hostname
+  if (!resp.ok) return resp
+  try {
+    const record = await resp.json()
+    console.log(resp.status, record)
+    if (!hostname) {
+      hostname = record.data.attributes.hostname
+    }
+    const meta = await db.collection("hostnames").get(hostname)
+    console.log("hostname meta:", hostname, meta)
+    if (meta) {
+      record.data.attributes.glitch_app_id = meta.app_id
+    }
+    const body = JSON.stringify(record, null, "\t")
+    resp = new Response(body, resp)
+    resp.headers.set("content-length", body.length)
+    return resp
+  } catch (err) {
+    console.error("Error stitching Glitch:", err)
+    return resp
   }
-  const meta = await db.collection("hostnames").get(hostname)
-  console.log("hostname meta:", hostname, meta)
-  if (meta) {
-    record.data.attributes.glitch_app_id = meta.app_id
-  }
-  const body = JSON.stringify(record, null, "\t")
-  resp = new Response(body, resp)
-  resp.headers.set("content-length", body.length)
-  return resp
 }
 
 /**

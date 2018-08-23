@@ -42,7 +42,7 @@ curl https://localhost:3000/api/hostnames/testing10.waffles.fm \
 ### Create a hostname
 
 ```bash
-➜  glitch git:(master) ✗ curl http://localhost:3000/api/hostnames \
+curl http://localhost:3000/api/hostnames \
     -H "Content-Type: application/json" 
     -X POST 
     -d '{"data": { "attributes": { "hostname": "testing10.waffles.fm", "glitch_app_id":"1e74c5ba-2935-4f96-bc21-6af0aa2ad8a2" } } }' 
