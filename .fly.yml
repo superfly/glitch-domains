@@ -5,4 +5,3 @@ development:
 production:
   config:
     flyAppEndpoint: https://fly.io/api/v1/apps/glitch/
-    
