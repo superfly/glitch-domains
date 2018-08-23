@@ -39,7 +39,12 @@ curl -H "Content-Type: application/json" https://glitch-dev.edgeapp.net/api/host
 ### Create a hostname
 
 ```bash
-➜  glitch git:(master) ✗ curl -H "Content-Type: application/json" -X POST -d '{"data": { "attributes": { "hostname": "testing10.waffles.fm", "glitch_app_id":"1e74c5ba-2935-4f96-bc21-6af0aa2ad8a2" } } }' http://localhost:3000/api/hostnames -D - -H "Authorization: Bearer [TOKEN]"
+➜  glitch git:(master) ✗ curl http://localhost:3000/api/hostnames \
+    -H "Content-Type: application/json" 
+    -X POST 
+    -d '{"data": { "attributes": { "hostname": "testing10.waffles.fm", "glitch_app_id":"1e74c5ba-2935-4f96-bc21-6af0aa2ad8a2" } } }' 
+    -D - 
+    -H "Authorization: Bearer [TOKEN]"
 ```
 
 ```json
