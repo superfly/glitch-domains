@@ -18,7 +18,10 @@ fly server
 ### Get a Hostname
 
 ```bash
-curl -H "Content-Type: application/json" https://glitch-dev.edgeapp.net/api/hostnames/testing10.waffles.fm -D - -H "Authorization: Bearer [TOKEN]"
+curl https://localhost:3000/api/hostnames/testing10.waffles.fm \
+  -H "Content-Type: application/json" 
+  -D - 
+  -H "Authorization: Bearer [TOKEN]"
 ```
 
 ```json
