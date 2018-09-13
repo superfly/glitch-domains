@@ -79,7 +79,18 @@ async function getHostname(path, req) {
  * Deletes a hostname, call with DELETE method
  */
 async function deleteHostname(path, req) {
-  const [, hostname] = path.split("/")
+  const parts = path.split("/")
+  const hostname = parts[parts.length - 1]
+  try {
+    const json = await req.clone().json()
+    const meta = await db.collection("hostnames").get(hostname)
+    if (json.data.attributes.glitch_app_id !== meta.app_id) {
+      return new Response("app_id and hostname do not match", { status: 422 })
+    }
+  } catch (err) {
+    console.error("error checking hostname/app_id:", err)
+    return new Response("app_id and hostname do not match", { status: 422 })
+  }
   const resp = await flyAPI(path, req)
   if (resp.status === 200) {
     await db.collection("hostnames").del(hostname)
@@ -99,7 +110,7 @@ async function stitchGlitch(resp, hostname) {
       hostname = record.data.attributes.hostname
     }
     const meta = await db.collection("hostnames").get(hostname)
-    console.log("hostname meta:", hostname, meta)
+    console.debug("hostname meta:", hostname, meta)
     if (meta) {
       record.data.attributes.glitch_app_id = meta.app_id
     }

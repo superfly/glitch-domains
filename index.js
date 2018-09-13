@@ -20,7 +20,7 @@ fly.http.respondWith(async function (req) {
 
 const fourOhFour = new Response("not found", { status: 404 })
 async function serveGlitchApp(req) {
-  console.log("Serving glitch app")
+  console.debug("Serving glitch app")
   const h = req.headers.get("host")
   const key = `domain:${h}`
   const lookupGlitchDomain = async (h) => {
