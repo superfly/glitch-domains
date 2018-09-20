@@ -1,0 +1,23 @@
+{
+  "name": "glitch-domains",
+  "version": "1.0.0",
+  "description": "Glitch custom domains Edge App",
+  "main": "index.js",
+  "scripts": {
+    "test": "yarn test",
+    "start": "yarn fly server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/superfly/glitch-domains.git"
+  },
+  "author": "Kurt Mackey",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/superfly/glitch-domains/issues"
+  },
+  "homepage": "https://github.com/superfly/glitch-domains#readme",
+  "devDependencies": {
+    "@fly/fly": "^0.42.1-pre.0"
+  }
+}

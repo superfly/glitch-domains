@@ -3,7 +3,8 @@ import db from "@fly/data"
 import mount from "@fly/fetch/mount"
 
 const routes = mount({
-  "/api/hostnames": hostnamesAPI
+  "/api/hostnames": hostnamesAPI,
+  "/api/apps": hostnamesAPI
 })
 
 export default async function api(req, init) {
@@ -18,6 +19,9 @@ async function hostnamesAPI(req, init) {
   if (path.match(/^\/hostnames\/[^\/]+$/)) {
     if (req.method === "GET") return getHostname(path, req)
     if (req.method === "DELETE") return deleteHostname(path, req)
+  }
+  if(path.match(/^\/apps\/[^\/]+\/hostnames\/$/)){
+    if(req.method === "GET") return getAppHostnames(path, req)
   }
   if (path === "/hostnames" && req.method === "POST") {
     return createHostname(path, req)
@@ -46,7 +50,9 @@ async function createHostname(path, req) {
   }
   const resp = await flyAPI(path, req)
   if (resp.status === 201) {
-    await db.collection("hostnames").put(record.data.attributes.hostname, { app_id: app_id })
+    const hostname = record.data.attributes.hostname
+    await db.collection("hostnames").put(hostname, { app_id: app_id })
+    await db.collection("apps").put([app_id, hostname].join(":"), { hostname: hostname, created_at: Date.now()})
   }
   return stitchGlitch(resp)
 }
@@ -75,18 +81,29 @@ async function getHostname(path, req) {
   return resp
 }
 
+async function getAppHostnames(path, req){
+  const auth = await flyAPI("/releases", req) // just to auth
+  if(!auth.status === 200) return auth
+  const appID = path.match(/^\/apps\/([^\/]+)/)[1]
+  if(!appID) return new Response("not found", {status: 404})
+  const hostnames = await db.collection("apps").getAll(`${appID}:`)
+  return new Response(JSON.stringify(hostnames))
+}
+
 /**
  * Deletes a hostname, call with DELETE method
  */
 async function deleteHostname(path, req) {
   const parts = path.split("/")
   const hostname = parts[parts.length - 1]
+  let app_id = null
   try {
     const json = await req.clone().json()
     const meta = await db.collection("hostnames").get(hostname)
     if (json.data.attributes.glitch_app_id !== meta.app_id) {
       return new Response("app_id and hostname do not match", { status: 422 })
     }
+    app_id = meta.app_id
   } catch (err) {
     console.error("error checking hostname/app_id:", err)
     return new Response("app_id and hostname do not match", { status: 422 })
@@ -94,6 +111,7 @@ async function deleteHostname(path, req) {
   const resp = await flyAPI(path, req)
   if (resp.status === 200) {
     await db.collection("hostnames").del(hostname)
+    await db.collection("apps").del([app_id, hostname].join(":"))
   }
   return resp
 }

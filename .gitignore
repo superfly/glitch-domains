@@ -1,2 +1,3 @@
 .fly.secrets.yml
 .fly
+node_modules
