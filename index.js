@@ -75,5 +75,11 @@ async function serveGlitchApp(req) {
 async function getGlitchProject(id) {
   const resp = await fetch(`https://api.glitch.com/projects/${id}`)
   if (!resp.status === 200) return null
-  return await resp.json()
+  const body = await resp.text()
+  try{
+    return JSON.parse(body)
+  }catch(err){
+    console.error("Error parsing json:", id, body)
+    return null
+  }
 }
