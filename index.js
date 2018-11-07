@@ -22,7 +22,7 @@ const fourOhFour = new Response("not found", { status: 404 })
 async function serveGlitchApp(req) {
   console.debug("Serving glitch app")
   const h = req.headers.get("host")
-  const key = `domain:${h}`
+  const key = `domain:v1:${h}`
   const lookupGlitchDomain = async (h) => {
     if (!h) return
 
@@ -33,7 +33,7 @@ async function serveGlitchApp(req) {
       return
     }
 
-    const r = { domain: `${record.app_id}.glitch.me`, time: Date.now() }
+    const r = { domain: `${record.app_id}`, time: Date.now() }
     await cache.set(key, JSON.stringify(r))
     return r
   }
