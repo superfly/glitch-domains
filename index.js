@@ -10,7 +10,7 @@ fly.http.respondWith(async function (req) {
   const url = new URL(req.url);
 
   // this probably needs a dedicated hostname so we don't stomp on peoples' /api/ paths
-  if (url.pathname.startsWith("/api/")) {
+  if (apiRequest(url)) {
     return hostnameAPI(req)
   }
 
@@ -61,4 +61,11 @@ async function serveGlitchApp(req) {
 
   // do proxying
   return origin(req)
+}
+
+function apiRequest(url){
+  return (
+    (app.env === "development" || url.hostname === "glitch.edgeapp.net") &&
+    url.pathname.startsWith("/api/")
+  )
 }
