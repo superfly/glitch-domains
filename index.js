@@ -33,14 +33,7 @@ async function serveGlitchApp(req) {
       return
     }
 
-    // get domain from Glitch API
-    const project = await getGlitchProject(record.app_id)
-    if (!project) {
-      console.error("Glitch project not found:", project)
-      return
-    }
-
-    const r = { domain: project.domain, time: Date.now() }
+    const r = { domain: `${record.app_id}.glitch.me`, time: Date.now() }
     await cache.set(key, JSON.stringify(r))
     return r
   }
@@ -68,18 +61,4 @@ async function serveGlitchApp(req) {
 
   // do proxying
   return origin(req)
-}
-
-
-// get Glitch Project from API
-async function getGlitchProject(id) {
-  const resp = await fetch(`https://api.glitch.com/projects/${id}`)
-  if (!resp.status === 200) return null
-  const body = await resp.text()
-  try{
-    return JSON.parse(body)
-  }catch(err){
-    console.error("Error parsing json:", id, body)
-    return null
-  }
 }
