@@ -18,6 +18,6 @@
   },
   "homepage": "https://github.com/superfly/glitch-domains#readme",
   "devDependencies": {
-    "@fly/fly": "^0.42.1-pre.0"
+    "@fly/fly": "^0.44.8"
   }
 }
