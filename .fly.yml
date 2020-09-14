@@ -1,7 +1,7 @@
 app: glitch-dev
 development:
   config:
-    flyAppEndpoint: https://fly.io/api/v1/apps/glitch-dev/
+    flyAppEndpoint: https://api.fly.io/api/v1/apps/glitch-dev/
 production:
   config:
-    flyAppEndpoint: https://fly.io/api/v1/apps/glitch/
+    flyAppEndpoint: https://api.fly.io/api/v1/apps/glitch/
